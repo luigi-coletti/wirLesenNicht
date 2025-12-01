@@ -8,6 +8,6 @@ public interface Media {
     public String getDescription();
     public String getId();
     public Date getReturnDate();
-    public boolean isLent();
-    public boolean setLent(boolean lent);
+    public Date getLentDate();
+    public boolean lend();
 }
