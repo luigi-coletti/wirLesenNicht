@@ -1,8 +1,11 @@
-package main.java.ch.prog1.wirlesennicht.data;
+package ch.prog1.wirlesennicht.data;
+
+import java.util.Date;
 
 public interface Media {
     public String getTitle();
     public String getCreator();
     public String getDescription();
-    public int getId();
+    public String getId();
+    public Date getReturnDate();
 }
