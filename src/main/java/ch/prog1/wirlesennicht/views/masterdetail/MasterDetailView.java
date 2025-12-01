@@ -1,5 +1,6 @@
 package ch.prog1.wirlesennicht.views.masterdetail;
 
+import ch.prog1.wirlesennicht.data.Media;
 import ch.prog1.wirlesennicht.data.SamplePerson;
 import ch.prog1.wirlesennicht.services.SamplePersonService;
 import com.vaadin.flow.component.UI;
@@ -43,7 +44,7 @@ public class MasterDetailView extends Div implements BeforeEnterObserver {
     private final String SAMPLEPERSON_ID = "samplePersonID";
     private final String SAMPLEPERSON_EDIT_ROUTE_TEMPLATE = "/%s/edit";
 
-    private final Grid<SamplePerson> grid = new Grid<>(SamplePerson.class, false);
+    private final Grid<Media> grid = new Grid<>(Media.class, false);
 
     private TextField firstName;
     private TextField lastName;
@@ -57,7 +58,7 @@ public class MasterDetailView extends Div implements BeforeEnterObserver {
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
 
-    private final BeanValidationBinder<SamplePerson> binder;
+    private final BeanValidationBinder<Person> binder;
 
     private SamplePerson samplePerson;
 
@@ -76,11 +77,11 @@ public class MasterDetailView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
+        grid.addColumn("ID").setAutoWidth(true);
+        grid.addColumn("Titel").setAutoWidth(true);
+        grid.addColumn("Ersteller").setAutoWidth(true);
+        grid.addColumn("Ausgeliehen bis").setAutoWidth(true);
+        grid.addColumn("Kurze Beschreibung").setAutoWidth(true);
         grid.addColumn("occupation").setAutoWidth(true);
         grid.addColumn("role").setAutoWidth(true);
         LitRenderer<SamplePerson> importantRenderer = LitRenderer.<SamplePerson>of(
