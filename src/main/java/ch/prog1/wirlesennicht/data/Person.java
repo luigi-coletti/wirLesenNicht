@@ -1,6 +1,5 @@
 package ch.prog1.wirlesennicht.data;
 
-import javax.print.attribute.standard.Media;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +20,7 @@ public class Person {
     }
 
     public void addMedia(Media media) {
+
         medias.put(media.getId(), media);
     }
 }
