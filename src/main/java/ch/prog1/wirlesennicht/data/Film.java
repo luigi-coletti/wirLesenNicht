@@ -1,29 +1,55 @@
 package ch.prog1.wirlesennicht.data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Film implements Media{
+    private final String title;
+    private final String regisseur;
+    private final String description;
+    private final String id;
+    private LocalDate lentDate = null;
+
+    public Film(String id, String title, String author, String description) {
+        if(id.isEmpty() || title.isEmpty() || author.isEmpty() || description.isEmpty())
+            throw new IllegalArgumentException();
+
+        this.title = title;
+        this.regisseur = author;
+        this.description = description;
+        this.id = id;
+    }
+
     public String getTitle() {
-        return "";
+        return this.title;
     }
 
     public String getCreator() {
-        return "";
+        return this.regisseur;
     }
 
     public String getDescription() {
-        return "";
+        return this.description;
     }
 
     public String getId() {
-        return "";
+        return this.id;
     }
 
-    public Date getReturnDate() {
-        return null;
+    public LocalDate getReturnDate() {
+        return this.lentDate.plusWeeks(2);
+
     }
 
-    public boolean isLent() {
-        return false;
+    public LocalDate getLentDate() {
+        return this.lentDate;
+    }
+
+    public boolean lend() {
+        LocalDate now =  LocalDate.now();
+        if(this.lentDate != null && now.isBefore(this.getReturnDate()))
+            return false;
+
+        this.lentDate = now;
+        return true;
     }
 }

@@ -1,13 +1,13 @@
 package ch.prog1.wirlesennicht.data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Buch implements Media{
-    private String title;
-    private String author;
-    private String description;
-    private String isbn;
-    private Date lentDate = null;
+    private final String title;
+    private final String author;
+    private final String description;
+    private final String isbn;
+    private LocalDate lentDate = null;
 
     public Buch(String id, String title, String author, String description) {
         if(id.isEmpty() || title.isEmpty() || author.isEmpty() || description.isEmpty())
@@ -35,21 +35,21 @@ public class Buch implements Media{
         return this.isbn;
     }
 
-    public Date getReturnDate() {
-        return null;
+    public LocalDate getReturnDate() {
+        return this.lentDate.plusMonths(1);
     }
 
-    public Date getLentDate() {
-        return null;
+    public LocalDate getLentDate() {
+        return this.lentDate;
     }
 
     public boolean lend() {
-        Date now = new Date();
-        if(this.lentDate != null && this.lentDate.after(now))
+        LocalDate now =  LocalDate.now();
+        if(this.lentDate != null && now.isBefore(this.getReturnDate()))
             return false;
 
-
-        return false;
+        this.lentDate = now;
+        return true;
     }
 
 }

@@ -1,13 +1,13 @@
 package ch.prog1.wirlesennicht.data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public interface Media {
     public String getTitle();
     public String getCreator();
     public String getDescription();
     public String getId();
-    public Date getReturnDate();
-    public Date getLentDate();
+    public LocalDate getReturnDate();
+    public LocalDate getLentDate();
     public boolean lend();
 }
