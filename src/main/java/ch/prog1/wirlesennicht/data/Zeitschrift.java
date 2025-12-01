@@ -2,12 +2,10 @@ package ch.prog1.wirlesennicht.data;
 
 import java.time.LocalDate;
 
-public class Zeitschrift implements Media{
-    private final String title;
+public class Zeitschrift extends Media{
+
     private final String editor;
-    private final String description;
-    private final String id;
-    private LocalDate lentDate = null;
+
 
     public Zeitschrift(String id, String title, String editor, String description) {
         if(id.isEmpty() || title.isEmpty() || editor.isEmpty() || description.isEmpty())

@@ -2,12 +2,9 @@ package ch.prog1.wirlesennicht.data;
 
 import java.time.LocalDate;
 
-public class Buch implements Media{
-    private final String title;
+public class Buch extends Media {
+
     private final String author;
-    private final String description;
-    private final String isbn;
-    private LocalDate lentDate = null;
 
     public Buch(String id, String title, String author, String description) {
         if(id.isEmpty() || title.isEmpty() || author.isEmpty() || description.isEmpty())
@@ -16,7 +13,7 @@ public class Buch implements Media{
         this.title = title;
         this.author = author;
         this.description = description;
-        this.isbn = id;
+        this.id = id;
     }
 
     public String getTitle() {
@@ -32,7 +29,7 @@ public class Buch implements Media{
     }
 
     public String getId() {
-        return this.isbn;
+        return this.id;
     }
 
     public LocalDate getReturnDate() {

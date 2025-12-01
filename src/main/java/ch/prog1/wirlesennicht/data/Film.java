@@ -2,12 +2,9 @@ package ch.prog1.wirlesennicht.data;
 
 import java.time.LocalDate;
 
-public class Film implements Media{
-    private final String title;
+public class Film extends Media{
+
     private final String regisseur;
-    private final String description;
-    private final String id;
-    private LocalDate lentDate = null;
 
     public Film(String id, String title, String author, String description) {
         if(id.isEmpty() || title.isEmpty() || author.isEmpty() || description.isEmpty())
