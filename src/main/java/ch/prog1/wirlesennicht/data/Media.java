@@ -9,4 +9,5 @@ public interface Media {
     public String getId();
     public Date getReturnDate();
     public boolean isLent();
+    public boolean setLent(boolean lent);
 }
