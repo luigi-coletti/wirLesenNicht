@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -37,6 +38,7 @@ public class MasterDetailView extends Div {
 
     private Select<Person> personSelect = new Select<>();
     private HorizontalLayout filterBar = new HorizontalLayout();
+    private VerticalLayout filterLayout = new VerticalLayout();
     private TextField searchField = new TextField("Titel suchen");
     private final Grid<Media> grid = new Grid<>(Media.class, false);
     private Grid.Column<Media> returnColumn;
@@ -44,11 +46,67 @@ public class MasterDetailView extends Div {
     private final Controller controller;
 
     public MasterDetailView(Controller controller) {
-
         this.controller = controller;
+
         addClassNames("master-detail-view");
 
+        // Create UI
+        SplitLayout splitLayout = new SplitLayout();
+
         // Configure Grid
+        configureGrid(controller);
+
+
+        returnColumn = grid.addComponentColumn(media -> {
+            Button returnBtn = new Button("Zurückgeben");
+            returnBtn.addClickListener(e -> {
+                controller.returnMedia(media);
+                refreshGrid();
+            });
+            returnBtn.setEnabled(media.getLentDate() != null);
+            return returnBtn;
+        });
+
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
+        // when a row is selected or deselected, populate form
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                UI.getCurrent().navigate("media/" + event.getValue().getId());
+            } else {
+                UI.getCurrent().navigate(MasterDetailView.class);
+            }
+        });
+
+        configureFilterAndSort(controller);
+
+        createLayout(splitLayout);
+
+        add(splitLayout);
+    }
+
+    private void configureFilterAndSort(Controller controller) {
+        personSelect.setLabel("Person");
+        personSelect.setPlaceholder("Alle");
+        personSelect.setEmptySelectionAllowed(true);
+        personSelect.setItems(controller.getUsers());
+        personSelect.setItemLabelGenerator(p -> p != null ? p.getFirstName() + " " + p.getLastName() : " ");
+        personSelect.addValueChangeListener(e -> {
+
+            Person selected = e.getValue();
+            returnColumn.setVisible(selected != null);
+            refreshGrid();
+        });
+
+        searchField.setPlaceholder("Titel...");
+        searchField.setClearButtonVisible(true);
+        searchField.setWidth("300px");
+        searchField.setValueChangeMode(ValueChangeMode.LAZY);
+
+        searchField.addValueChangeListener(e -> refreshGrid());
+    }
+
+    private void configureGrid(Controller controller) {
         grid.addColumn("id").setAutoWidth(true).setHeader("ID");
         grid.addColumn("title").setAutoWidth(true).setHeader("Title");
         grid.addColumn(Media::getDescription).setAutoWidth(true).setHeader("Beschreibung");
@@ -114,48 +172,10 @@ public class MasterDetailView extends Div {
                     return (int) baseStream.count();
                 }
         );
+    }
 
 
-        returnColumn = grid.addComponentColumn(media -> {
-            Button returnBtn = new Button("Zurückgeben");
-            returnBtn.addClickListener(e -> {
-                controller.returnMedia(media);
-                refreshGrid();
-            });
-            returnBtn.setEnabled(media.lend());
-            return returnBtn;
-        });
-
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-
-        // when a row is selected or deselected, populate form
-        grid.asSingleSelect().addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                UI.getCurrent().navigate("media/" + event.getValue().getId());
-            } else {
-                UI.getCurrent().navigate(MasterDetailView.class);
-            }
-        });
-
-        personSelect.setLabel("Person");
-        personSelect.setPlaceholder("Alle");
-        personSelect.setEmptySelectionAllowed(true);
-        personSelect.setItems(controller.getUsers());
-        personSelect.setItemLabelGenerator(p -> p != null ? p.getFirstName() + " " + p.getLastName() : " ");
-        personSelect.addValueChangeListener(e -> {
-
-            Person selected = e.getValue();
-            returnColumn.setVisible(selected != null);
-            refreshGrid();
-        });
-
-        searchField.setPlaceholder("Titel...");
-        searchField.setClearButtonVisible(true);
-        searchField.setWidth("300px");
-        searchField.setValueChangeMode(ValueChangeMode.LAZY);
-
-        searchField.addValueChangeListener(e -> refreshGrid());
-
+    private void createLayout(SplitLayout splitLayout) {
         filterBar = new HorizontalLayout();
         filterBar.setWidthFull();
         filterBar.setAlignItems(FlexComponent.Alignment.END);
@@ -163,20 +183,15 @@ public class MasterDetailView extends Div {
         filterBar.getStyle().set("margin-bottom", "10px");
         filterBar.add(personSelect,searchField);
 
-        // Create UI
-        SplitLayout splitLayout = new SplitLayout();
+        filterLayout = new VerticalLayout();
+        filterLayout.setWidthFull();
+        filterLayout.add(filterBar);
+        filterLayout.add(grid);
 
-        createGridLayout(splitLayout);
-
-        add(splitLayout);
-    }
-
-
-    private void createGridLayout(SplitLayout splitLayout) {
         Div wrapper = new Div();
         wrapper.setClassName("grid-wrapper");
+        wrapper.add(filterLayout);
         splitLayout.addToPrimary(wrapper);
-        wrapper.add(filterBar, grid);
     }
 
     private void refreshGrid() {

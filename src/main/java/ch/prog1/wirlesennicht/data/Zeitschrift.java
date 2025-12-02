@@ -41,6 +41,11 @@ public class Zeitschrift extends Media{
         return this.lentDate;
     }
 
+    public LocalDate getPossibleLentDate(){
+        LocalDate now =  LocalDate.now();
+        return now.plusDays(5);
+    }
+
     public boolean lend() {
         LocalDate now =  LocalDate.now();
         if(this.lentDate != null && now.isBefore(this.getReturnDate()))

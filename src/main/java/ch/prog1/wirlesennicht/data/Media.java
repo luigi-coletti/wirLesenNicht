@@ -22,5 +22,7 @@ public abstract class Media {
 
     public abstract LocalDate getLentDate();
 
+    public abstract LocalDate getPossibleLentDate();
+
     public abstract boolean lend();
 }

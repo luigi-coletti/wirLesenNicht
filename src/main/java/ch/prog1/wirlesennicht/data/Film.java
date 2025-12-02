@@ -41,6 +41,11 @@ public class Film extends Media{
         return this.lentDate;
     }
 
+    public LocalDate getPossibleLentDate(){
+        LocalDate now =  LocalDate.now();
+        return now.plusWeeks(2);
+    }
+
     public boolean lend() {
         LocalDate now =  LocalDate.now();
         if(this.lentDate != null && now.isBefore(this.getReturnDate()))

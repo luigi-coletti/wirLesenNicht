@@ -40,6 +40,11 @@ public class Buch extends Media {
         return this.lentDate;
     }
 
+    public LocalDate getPossibleLentDate(){
+        LocalDate now =  LocalDate.now();
+        return now.plusMonths(1);
+    }
+
     public boolean lend() {
         LocalDate now =  LocalDate.now();
         if(this.lentDate != null && now.isBefore(this.getReturnDate()))

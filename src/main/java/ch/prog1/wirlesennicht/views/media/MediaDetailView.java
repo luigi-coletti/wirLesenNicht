@@ -3,11 +3,15 @@ package ch.prog1.wirlesennicht.views.media;
 import ch.prog1.wirlesennicht.data.Media;
 import ch.prog1.wirlesennicht.services.Controller;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -53,32 +57,114 @@ public class MediaDetailView extends VerticalLayout implements BeforeEnterObserv
     private void buildLayout() {
         removeAll();
 
-        add(new H2(media.getTitle()));
-        add(new Paragraph(media.getDescription()));
-        add(new Paragraph("Ersteller: " + media.getCreator()));
-        add(new Paragraph("Ausgeliehen bis: " + media.getReturnDate()));
+        // --- Hauptkarte ---
+        VerticalLayout card = new VerticalLayout();
+        card.setWidthFull();
+        card.setPadding(true);
+        card.setSpacing(true);
+        card.getStyle()
+                .set("border-radius", "12px")
+                .set("border", "1px solid var(--lumo-contrast-20pct)")
+                .set("padding", "20px")
+                .set("max-width", "600px")
+                .set("margin", "auto")
+                .set("box-shadow", "var(--lumo-box-shadow-s)")
+                .set("background", "var(--lumo-base-color)");
 
-        Button borrowBtn = new Button("Ausleihen", click -> openBorrowDialog());
-        add(borrowBtn);
-    }
+        // Titel
+        H2 title = new H2(media.getTitle());
+        title.getStyle().set("margin-top", "0");
 
-    private void openBorrowDialog() {
-        Dialog dialog = new Dialog();
+        // Beschreibung
+        Paragraph desc = new Paragraph(media.getDescription());
+        desc.getStyle().set("white-space", "pre-line");
 
-        TextField fname = new TextField("Vorname");
-        TextField lname = new TextField("Nachname");
+        // Meta Infos (Ersteller / Datum)
+        HorizontalLayout meta = new HorizontalLayout();
+        meta.setWidthFull();
+        meta.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        FormLayout form = new FormLayout(fname, lname);
+        Span creator = new Span("📘 Ersteller: " + media.getCreator());
+        Span date;
+        if (media.getLentDate() != null) {
+             date = new Span("📅 Ausgeliehen bis: " + media.getLentDate());
 
-        Button confirm = new Button("Bestätigen", e -> {
-            controller.lendMedia(media, fname.getValue(), lname.getValue());
-            dialog.close();
+        } else {
+             date = new Span("📅 Ausleihen bis: " + media.getPossibleLentDate());
+
+        }
+
+        meta.add(creator, date);
+
+        // Footer mit Button
+        HorizontalLayout footer = new HorizontalLayout();
+        footer.setWidthFull();
+        footer.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        Button borrowBtn = new Button(
+                media.getLentDate() != null ? "Zurückgeben" : "Ausleihen"
+        );
+
+        borrowBtn.getStyle()
+                .set("border-radius", "10px")
+                .set("padding", "10px 20px")
+                .set("font-weight", "600");
+
+        borrowBtn.addClickListener(click -> {
+            if (media.getLentDate() != null) {
+                openReturnDialog(media);
+            } else {
+                openBorrowDialog(media);
+            }
         });
 
-        Button cancel = new Button("Abbrechen", e -> dialog.close());
+        footer.add(borrowBtn);
 
-        dialog.add(new H2("Medium ausleihen"), form, confirm, cancel);
+        // Layout zusammensetzen
+        card.add(title, desc, meta, footer);
+        add(card);
+    }
+
+    private void openBorrowDialog(Media media) {
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Medium ausleihen");
+
+        TextField firstName = new TextField("Vorname");
+        TextField lastName = new TextField("Nachname");
+
+        VerticalLayout layout = new VerticalLayout(firstName, lastName);
+        dialog.add(layout);
+
+        Button confirm = new Button("Ausleihen", event -> {
+            controller.lendMedia(media, firstName.getValue(), lastName.getValue());
+            dialog.close();
+            UI.getCurrent().getPage().reload();
+        });
+
+        Button cancel = new Button("Abbrechen", event -> dialog.close());
+
+        dialog.getFooter().add(cancel, confirm);
         dialog.open();
     }
+
+    private void openReturnDialog(Media media) {
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Medium zurückgeben");
+
+        dialog.add(new Span("Möchtest du dieses Medium wirklich zurückgeben?"));
+
+        Button confirm = new Button("Zurückgeben", event -> {
+            controller.returnMedia(media);
+            dialog.close();
+            UI.getCurrent().getPage().reload();
+        });
+
+        Button cancel = new Button("Abbrechen", event -> dialog.close());
+
+        dialog.getFooter().add(cancel, confirm);
+        dialog.open();
+    }
+
+
 }
 
