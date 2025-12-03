@@ -33,7 +33,7 @@ public class Buch extends Media {
     }
 
     public LocalDate getReturnDate() {
-        return this.lentDate.plusMonths(1);
+        return this.lentDate == null ? null : this.lentDate.plusMonths(1);
     }
 
     public LocalDate getLentDate() {

@@ -68,6 +68,7 @@ public class MasterDetailView extends Div {
         });
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setAllRowsVisible(true);
 
         // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
@@ -101,78 +102,48 @@ public class MasterDetailView extends Div {
         searchField.setPlaceholder("Titel...");
         searchField.setClearButtonVisible(true);
         searchField.setWidth("300px");
-        searchField.setValueChangeMode(ValueChangeMode.LAZY);
+        searchField.setValueChangeMode(ValueChangeMode.EAGER);
 
         searchField.addValueChangeListener(e -> refreshGrid());
     }
 
     private void configureGrid(Controller controller) {
-        grid.addColumn("id").setAutoWidth(true).setHeader("ID");
-        grid.addColumn("title").setAutoWidth(true).setHeader("Title");
+        grid.addColumn(Media::getId).setAutoWidth(true).setHeader("ID");
+        grid.addColumn(Media::getTitle).setAutoWidth(true).setHeader("Title");
         grid.addColumn(Media::getDescription).setAutoWidth(true).setHeader("Beschreibung");
-        grid.addColumn(Media::getLentDate).setAutoWidth(true).setHeader("Ausgeliehen bis");
-
+        grid.addColumn(media -> media.getLentDate() != null ? media.getLentDate(): "").setAutoWidth(true).setHeader("Ausgeliehen bis");
         grid.setItems(
-                query -> {
+                query -> getFilteredStream()
+                        .skip(query.getOffset())
+                        .limit(query.getLimit()),
 
-                    Person selected = personSelect.getValue();
-                    String search = searchField.getValue() == null ? "" : searchField.getValue().toLowerCase();
-
-                    // gleiche Logik wie zuvor – aber nun wird limitiert und geskippt
-                    Stream<Media> baseStream;
-
-                    if (selected != null && !search.isBlank()) {
-                        baseStream = controller.getMediasByPerson(selected.getFirstName(), selected.getLastName())
-                                .stream()
-                                .filter(media -> media.getTitle().toLowerCase().contains(search));
-
-                    } else if (selected != null) {
-                        baseStream = controller.getMediasByPerson(selected.getFirstName(), selected.getLastName())
-                                .stream();
-
-                    } else if (!search.isBlank()) {
-                        baseStream = controller.getAllMedias()
-                                .stream()
-                                .filter(media -> media.getTitle().toLowerCase().contains(search));
-
-                    } else {
-                        baseStream = controller.getAllMedias().stream();
-                    }
-
-                    return baseStream
-                            .skip(query.getOffset())   // Wichtig!
-                            .limit(query.getLimit());   // Wichtig!
-                },
-
-                // Count callback
-                query -> {
-                    Person selected = personSelect.getValue();
-                    String search = searchField.getValue() == null ? "" : searchField.getValue().toLowerCase();
-
-                    Stream<Media> baseStream;
-
-                    if (selected != null && !search.isBlank()) {
-                        baseStream = controller.getMediasByPerson(selected.getFirstName(), selected.getLastName())
-                                .stream()
-                                .filter(media -> media.getTitle().toLowerCase().contains(search));
-
-                    } else if (selected != null) {
-                        baseStream = controller.getMediasByPerson(selected.getFirstName(), selected.getLastName())
-                                .stream();
-
-                    } else if (!search.isBlank()) {
-                        baseStream = controller.getAllMedias()
-                                .stream()
-                                .filter(media -> media.getTitle().toLowerCase().contains(search));
-
-                    } else {
-                        baseStream = controller.getAllMedias().stream();
-                    }
-
-                    return (int) baseStream.count();
-                }
+                query -> (int) getFilteredStream().count()
         );
     }
+
+    private Stream<Media> getFilteredStream() {
+        Person selected = personSelect.getValue();
+        String search = searchField.getValue() == null ? "" : searchField.getValue().toLowerCase();
+
+        Stream<Media> stream = controller.getAllMedias().stream();
+
+        if (selected != null) {
+            stream = stream.filter(media ->
+                    controller.getMediasByPerson(selected.getFirstName(), selected.getLastName())
+                            .contains(media)
+            );
+        }
+
+        if (!search.isBlank()) {
+            stream = stream.filter(media ->
+                    media.getTitle().toLowerCase().contains(search)
+            );
+        }
+
+        return stream;
+    }
+
+
 
 
     private void createLayout(SplitLayout splitLayout) {
@@ -189,6 +160,10 @@ public class MasterDetailView extends Div {
         filterLayout.add(grid);
 
         Div wrapper = new Div();
+        grid.setSizeFull();
+        splitLayout.setSizeFull();
+        wrapper.setSizeFull();
+
         wrapper.setClassName("grid-wrapper");
         wrapper.add(filterLayout);
         splitLayout.addToPrimary(wrapper);
