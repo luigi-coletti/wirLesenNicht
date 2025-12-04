@@ -1,4 +1,4 @@
-# 📖 Bibliothekssoftware Demo: wirLesenNicht (Vaadin UI)
+# 📖 Bibliothekssoftware: Team wirLesenNicht (Vaadin UI)
 
 ## 🌟 Überblick
 
