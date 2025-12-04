@@ -51,7 +51,7 @@ Stellen Sie sicher, dass folgende Software auf Ihrem System installiert ist:
 
 1.  **Repository klonen:**
     ```bash
-    git clone [https://github.com/luigi-coletti/wirLesenNicht.git](https://github.com/luigi-coletti/wirLesenNicht.git)
+    git clone https://github.com/luigi-coletti/wirLesenNicht.git
     cd wirLesenNicht
     ```
 
