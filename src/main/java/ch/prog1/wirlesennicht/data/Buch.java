@@ -46,12 +46,15 @@ public class Buch extends Media {
     }
 
     public boolean lend() {
-        LocalDate now =  LocalDate.now();
-        if(this.lentDate != null && now.isBefore(this.getReturnDate()))
-            return false;
-
-        this.lentDate = now;
-        return true;
+        if(this.lentDate != null){
+            lentDate = null;
+            System.out.println("LEND: " + this.lentDate);
+            return true;
+        }else {
+            this.lentDate = LocalDate.now();
+            System.out.println("LEND: " + this.lentDate);
+            return true;
+        }
     }
 
 }

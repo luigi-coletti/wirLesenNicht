@@ -47,11 +47,12 @@ public class Zeitschrift extends Media{
     }
 
     public boolean lend() {
-        LocalDate now =  LocalDate.now();
-        if(this.lentDate != null && now.isBefore(this.getReturnDate()))
-            return false;
-
-        this.lentDate = now;
-        return true;
+        if(this.lentDate != null){
+            lentDate = null;
+            return true;
+        }else {
+            this.lentDate = LocalDate.now();
+            return true;
+        }
     }
 }
