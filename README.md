@@ -1,51 +1,79 @@
-# My App
+# 📖 Bibliothekssoftware Demo: wirLesenNicht (Vaadin UI)
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+## 🌟 Überblick
 
-## Running the application
+Diese Anwendung ist eine **Demo-Implementierung einer Bibliotheksverwaltungssoftware**, die als Vaadin-Webanwendung realisiert wurde. Sie ermöglicht es registrierten Nutzern, verschiedene Medientypen – **Bücher**, **Filme** und **Zeitschriften** – auszuleihen und den Überblick über die Rückgabetermine zu behalten.
 
-Open the project in an IDE. You can download the [IntelliJ community edition](https://www.jetbrains.com/idea/download) if you do not have a suitable IDE already.
-Once opened in the IDE, locate the `Application` class and run the main method using "Debug".
+Das Design folgt einem klaren Objektmodell, wie im beigefügten UML-Klassendiagramm dargestellt.
 
-For more information on installing in various IDEs, see [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/getting-started/import).
+---
 
-If you install the Vaadin plugin for IntelliJ, you should instead launch the `Application` class using "Debug using HotswapAgent" to see updates in the Java code immediately reflected in the browser.
+## ✨ Funktionen
 
-## Deploying to Production
+* **Medienkatalog:** Verwaltung und Anzeige aller verfügbaren Medien (`Buch`, `Film`, `Zeitschrift`).
+* **Ausleihe:** Nutzer können Medien ausleihen (verwaltet durch die `Controller`-Klasse).
+* **Rückgabetermine:** Anzeige, bis wann ein ausgeliehenes Medium zurückgegeben werden muss.
+* **Nutzerverwaltung:** Einfache Verwaltung von `Person`-Objekten.
+* **Vaadin UI:** Eine moderne, responsive Benutzeroberfläche, die im Browser läuft.
 
-The project is a standard Maven project. To create a production build, call 
+---
 
-```
-./mvnw clean package -Pproduction
-```
+## 🛠️ Systemarchitektur
 
-If you have Maven globally installed, you can replace `./mvnw` with `mvn`.
+Die Anwendung basiert auf dem folgenden objektorientierten Design:
 
-This will build a JAR file with all the dependencies and front-end resources,ready to be run. The file can be found in the `target` folder after the build completes.
-You then launch the application using 
-```
-java -jar target/wirlesennicht-1.0-SNAPSHOT.jar
-```
+### 1. Kernobjekte
 
-## Project structure
+* **`Controller`**: Die zentrale Steuerungslogik. Sie verwaltet alle Medien (`allMedia: HashMap<String, Media>`) und alle Nutzer (`users: ArrayList<Person>`).
+* **`Media`** (Abstract): Die abstrakte Basisklasse für alle ausleihbaren Objekte. Sie definiert gemeinsame Attribute wie **Titel**, **ID** und das **Ausleihdatum** (`lentDate`).
+* **`Buch`**, **`Zeitschrift`**, **`Film`**: Konkrete Subklassen von `Media`, die jeweils spezifische Attribute (wie `author`, `editor`, `regisseur`) hinzufügen.
+* **`Person`**: Repräsentiert einen Nutzer der Bibliothek mit Attributen wie **Vorname**, **Nachname** und einer Liste der aktuell ausgeliehenen Medien (`medias: HashMap<String, Media>`).
 
-- `MainLayout.java` in `src/main/java` contains the navigation setup (i.e., the
-  side/top bar and the main menu). This setup uses
-  [App Layout](https://vaadin.com/docs/components/app-layout).
-- `views` package in `src/main/java` contains the server-side Java views of your application.
-- `views` folder in `src/main/frontend` contains the client-side JavaScript views of your application.
-- `themes` folder in `src/main/frontend` contains the custom CSS styles.
+### 2. Beziehungen
 
-## Useful links
+* Der **`Controller`** aggregiert alle **`Media`**-Objekte und **`Person`**-Objekte.
+* Die **`Person`**-Objekte halten eine Referenz auf die von ihnen ausgeliehenen **`Media`**-Objekte.
 
-- Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
-- Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
-- Create new projects at [start.vaadin.com](https://start.vaadin.com/).
-- Search UI components and their usage examples at [vaadin.com/docs/latest/components](https://vaadin.com/docs/latest/components).
-- View use case applications that demonstrate Vaadin capabilities at [vaadin.com/examples-and-demos](https://vaadin.com/examples-and-demos).
-- Build any UI without custom CSS by discovering Vaadin's set of [CSS utility classes](https://vaadin.com/docs/styling/lumo/utility-classes). 
-- Find a collection of solutions to common use cases at [cookbook.vaadin.com](https://cookbook.vaadin.com/).
-- Find add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-- Ask questions on [Stack Overflow](https://stackoverflow.com/questions/tagged/vaadin) or join our [Forum](https://vaadin.com/forum).
-- Report issues, create pull requests in [GitHub](https://github.com/vaadin).
+
+---
+
+## 🚀 Erste Schritte
+
+### Voraussetzungen
+
+Stellen Sie sicher, dass folgende Software auf Ihrem System installiert ist:
+
+* **Java Development Kit (JDK) 17** oder neuer.
+* **Maven** (wird oft mit modernen IDEs wie IntelliJ gebündelt).
+* **IntelliJ IDEA** (Empfohlen für eine einfache Ausführung).
+
+### Installation & Start
+
+1.  **Repository klonen:**
+    ```bash
+    git clone [https://github.com/luigi-coletti/wirLesenNicht.git](https://github.com/luigi-coletti/wirLesenNicht.git)
+    cd wirLesenNicht
+    ```
+
+2.  **Projekt in IntelliJ öffnen:**
+    * Öffnen Sie IntelliJ IDEA.
+    * Wählen Sie **Open** und navigieren Sie zum geklonten `wirLesenNicht`-Ordner.
+    * IntelliJ sollte das Maven-Projekt automatisch erkennen und initialisieren.
+
+3.  **Anwendung starten:**
+    * Navigieren Sie zur Datei `src/main/java/.../Application.java`.
+    * Klicken Sie mit der rechten Maustaste auf die Datei und wählen Sie **"Run 'Application.main()'"** oder verwenden Sie die `Run`-Taste in der IDE.
+
+---
+
+## 🌐 Nutzung
+
+Nach dem Start der Anwendung ist die Web-Oberfläche unter folgender Adresse verfügbar:
+
+---
+## License
+Whaat? We don't need that.
+
+➡️ **http://localhost:8080**
+
+Die Vaadin-Anwendung wird im Browser geladen und Sie können mit der Demo-Bibliotheksverwaltung interagieren.
