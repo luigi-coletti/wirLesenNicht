@@ -70,10 +70,11 @@ Stellen Sie sicher, dass folgende Software auf Ihrem System installiert ist:
 
 Nach dem Start der Anwendung ist die Web-Oberfläche unter folgender Adresse verfügbar:
 
----
-## License
-Whaat? We don't need that.
-
 ➡️ **http://localhost:8080**
 
 Die Vaadin-Anwendung wird im Browser geladen und Sie können mit der Demo-Bibliotheksverwaltung interagieren.
+
+
+---
+## License
+Whaat? We don't need that.
